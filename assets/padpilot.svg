@@ -1,0 +1,54 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="220" viewBox="0 0 480 220">
+  <style>
+    text{font-family:'Segoe UI',Ubuntu,'Helvetica Neue',Arial,sans-serif}
+    .float{animation:float 3s ease-in-out infinite}
+    @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-6px)}}
+    .light{animation:light 4s linear infinite}
+    @keyframes light{0%{fill:#7c5cff}33%{fill:#00d4ff}66%{fill:#ff4fd8}100%{fill:#7c5cff}}
+    .glow{animation:glow 4s linear infinite}
+    @keyframes glow{0%{fill:#7c5cff}33%{fill:#00d4ff}66%{fill:#ff4fd8}100%{fill:#7c5cff}}
+    .btn{opacity:.3;animation:press 2.4s infinite}
+    @keyframes press{0%,18%{opacity:1}30%,100%{opacity:.3}}
+    .b2{animation-delay:.6s}.b3{animation-delay:1.2s}.b4{animation-delay:1.8s}
+    .stick{animation:stick 2.2s ease-in-out infinite}
+    .stick2{animation:stick 2.2s ease-in-out infinite reverse}
+    @keyframes stick{0%,100%{transform:translate(0,0)}25%{transform:translate(3px,-2px)}75%{transform:translate(-3px,2px)}}
+    .vib{animation:vib .9s ease-in-out infinite}
+    @keyframes vib{0%,100%{opacity:0}50%{opacity:.8}}
+  </style>
+  <rect x="0.5" y="0.5" width="479" height="219" rx="14" fill="#0d1117" stroke="#30363d"/>
+  <rect x="0.5" y="0.5" width="5" height="219" rx="2" fill="#7c5cff"/>
+
+  <text x="26" y="50" font-size="26" font-weight="700" fill="#f0f6fc">PadPilot</text>
+  <text x="26" y="74" font-size="13" fill="#8b949e">Gestor de mandos para Windows</text>
+  <text x="26" y="104" font-size="13" fill="#c9d1d9">DualSense · DualShock 4 · genéricos</text>
+  <text x="26" y="124" font-size="13" fill="#c9d1d9">Luces, gatillos adaptativos,</text>
+  <text x="26" y="144" font-size="13" fill="#c9d1d9">remapeo, macros y emulación Xbox</text>
+  <g font-size="11" font-weight="600">
+    <rect x="26" y="170" width="38" height="22" rx="11" fill="#7c5cff" fill-opacity=".18" stroke="#7c5cff"/>
+    <text x="45" y="185" text-anchor="middle" fill="#b8a6ff">C#</text>
+    <rect x="72" y="170" width="70" height="22" rx="11" fill="#00d4ff" fill-opacity=".12" stroke="#00d4ff"/>
+    <text x="107" y="185" text-anchor="middle" fill="#7fe9ff">Windows</text>
+  </g>
+
+  <ellipse class="glow" cx="380" cy="185" rx="70" ry="7" opacity=".35"/>
+  <g class="float">
+    <path class="vib" d="M296 95 q-8 15 0 30 M288 90 q-10 20 0 40" fill="none" stroke="#7c5cff" stroke-width="2" stroke-linecap="round"/>
+    <path class="vib" d="M464 95 q8 15 0 30 M472 90 q10 20 0 40" fill="none" stroke="#7c5cff" stroke-width="2" stroke-linecap="round"/>
+    <path d="M318 88 Q323 66 350 66 L410 66 Q437 66 442 88 L458 150 Q463 172 443 174 Q429 175 419 157 L410 142 L350 142 L341 157 Q331 175 317 174 Q297 172 302 150 Z" fill="#e6e9f0" stroke="#aab1c2" stroke-width="1.5"/>
+    <rect x="362" y="74" width="36" height="22" rx="4" fill="#cfd4de" stroke="#aab1c2"/>
+    <rect class="light" x="364" y="70" width="32" height="4" rx="2"/>
+    <g fill="#5b6275">
+      <rect x="333" y="91" width="18" height="6" rx="1.5"/>
+      <rect x="339" y="85" width="6" height="18" rx="1.5"/>
+    </g>
+    <circle class="btn" cx="420" cy="84" r="4.5" fill="#22c55e"/>
+    <circle class="btn b2" cx="430" cy="94" r="4.5" fill="#ef4444"/>
+    <circle class="btn b3" cx="420" cy="104" r="4.5" fill="#3b82f6"/>
+    <circle class="btn b4" cx="410" cy="94" r="4.5" fill="#ec4899"/>
+    <circle cx="362" cy="120" r="11" fill="#3b4150"/>
+    <circle class="stick" cx="362" cy="120" r="7" fill="#1f2430"/>
+    <circle cx="398" cy="120" r="11" fill="#3b4150"/>
+    <circle class="stick2" cx="398" cy="120" r="7" fill="#1f2430"/>
+  </g>
+</svg>

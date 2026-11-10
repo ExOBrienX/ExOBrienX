@@ -1,0 +1,56 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="220" viewBox="0 0 480 220">
+  <style>
+    text{font-family:'Segoe UI',Ubuntu,'Helvetica Neue',Arial,sans-serif}
+    .w{fill:#f2f2f2;animation:wk 3s infinite}
+    @keyframes wk{0%,12%{fill:#facc15}20%,100%{fill:#f2f2f2}}
+    .k{fill:#16181d;animation:bk 3s infinite}
+    @keyframes bk{0%,12%{fill:#d97706}20%,100%{fill:#16181d}}
+    .n{opacity:0;animation:up 3s ease-out infinite}
+    @keyframes up{0%{opacity:0;transform:translate(0,0)}15%{opacity:1}100%{opacity:0;transform:translate(12px,-60px)}}
+  </style>
+  <rect x="0.5" y="0.5" width="479" height="219" rx="14" fill="#0d1117" stroke="#30363d"/>
+  <rect x="0.5" y="0.5" width="5" height="219" rx="2" fill="#facc15"/>
+
+  <text x="26" y="50" font-size="26" font-weight="700" fill="#f0f6fc">NTE Piano Macro</text>
+  <text x="26" y="74" font-size="13" fill="#8b949e">MIDI → piano automático</text>
+  <text x="26" y="104" font-size="13" fill="#c9d1d9">Convierte archivos MIDI en</text>
+  <text x="26" y="124" font-size="13" fill="#c9d1d9">pulsaciones de teclado exactas,</text>
+  <text x="26" y="144" font-size="13" fill="#c9d1d9">con acordes y polifonía completa</text>
+  <g font-size="11" font-weight="600">
+    <rect x="26" y="170" width="62" height="22" rx="11" fill="#3776ab" fill-opacity=".2" stroke="#3776ab"/>
+    <text x="57" y="185" text-anchor="middle" fill="#8fb9e0">Python</text>
+    <rect x="96" y="170" width="48" height="22" rx="11" fill="#facc15" fill-opacity=".14" stroke="#facc15"/>
+    <text x="120" y="185" text-anchor="middle" fill="#fde68a">MIDI</text>
+  </g>
+
+  <!-- notas flotando -->
+  <g fill="#facc15">
+    <g transform="translate(320,100)"><g class="n"><ellipse cx="0" cy="0" rx="5" ry="3.6" transform="rotate(-20)"/><rect x="3.4" y="-18" width="1.8" height="18"/></g></g>
+    <g transform="translate(372,96)"><g class="n" style="animation-delay:1s"><ellipse cx="0" cy="0" rx="5" ry="3.6" transform="rotate(-20)"/><ellipse cx="12" cy="-3" rx="5" ry="3.6" transform="rotate(-20 12 -3)"/><rect x="3.4" y="-18" width="1.8" height="18"/><rect x="15.4" y="-21" width="1.8" height="18"/><path d="M3.4 -18 L17.2 -21 L17.2 -17 L3.4 -14 Z"/></g></g>
+    <g transform="translate(428,100)"><g class="n" style="animation-delay:2s"><ellipse cx="0" cy="0" rx="5" ry="3.6" transform="rotate(-20)"/><rect x="3.4" y="-18" width="1.8" height="18"/></g></g>
+  </g>
+
+  <!-- teclado -->
+  <rect x="290" y="108" width="180" height="84" rx="6" fill="#2a2116" stroke="#4a3a24"/>
+  <g stroke="#9aa0a6" stroke-width="1">
+    <rect class="w" x="295" y="114" width="17" height="72" rx="2" style="animation-delay:0s"/>
+    <rect class="w" x="312" y="114" width="17" height="72" rx="2" style="animation-delay:.3s"/>
+    <rect class="w" x="329" y="114" width="17" height="72" rx="2" style="animation-delay:.6s"/>
+    <rect class="w" x="346" y="114" width="17" height="72" rx="2" style="animation-delay:.9s"/>
+    <rect class="w" x="363" y="114" width="17" height="72" rx="2" style="animation-delay:1.2s"/>
+    <rect class="w" x="380" y="114" width="17" height="72" rx="2" style="animation-delay:1.5s"/>
+    <rect class="w" x="397" y="114" width="17" height="72" rx="2" style="animation-delay:1.8s"/>
+    <rect class="w" x="414" y="114" width="17" height="72" rx="2" style="animation-delay:2.1s"/>
+    <rect class="w" x="431" y="114" width="17" height="72" rx="2" style="animation-delay:2.4s"/>
+    <rect class="w" x="448" y="114" width="17" height="72" rx="2" style="animation-delay:2.7s"/>
+  </g>
+  <g>
+    <rect class="k" x="306" y="114" width="11" height="44" rx="2" style="animation-delay:.15s"/>
+    <rect class="k" x="323" y="114" width="11" height="44" rx="2" style="animation-delay:2.55s"/>
+    <rect class="k" x="357" y="114" width="11" height="44" rx="2" style="animation-delay:1.05s"/>
+    <rect class="k" x="374" y="114" width="11" height="44" rx="2" style="animation-delay:.45s"/>
+    <rect class="k" x="391" y="114" width="11" height="44" rx="2" style="animation-delay:1.95s"/>
+    <rect class="k" x="425" y="114" width="11" height="44" rx="2" style="animation-delay:1.35s"/>
+    <rect class="k" x="442" y="114" width="11" height="44" rx="2" style="animation-delay:2.25s"/>
+  </g>
+</svg>

@@ -1,0 +1,65 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="480" height="220" viewBox="0 0 480 220">
+  <style>
+    text{font-family:'Segoe UI',Ubuntu,'Helvetica Neue',Arial,sans-serif}
+    .dot{animation:pulse 1.4s ease-in-out infinite}
+    @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+  </style>
+  <defs>
+    <clipPath id="scope"><circle cx="385" cy="110" r="80"/></clipPath>
+    <radialGradient id="bg" cx="50%" cy="50%" r="50%">
+      <stop offset="0" stop-color="#0b2a33"/><stop offset="1" stop-color="#071419"/>
+    </radialGradient>
+  </defs>
+  <rect x="0.5" y="0.5" width="479" height="219" rx="14" fill="#0d1117" stroke="#30363d"/>
+  <rect x="0.5" y="0.5" width="5" height="219" rx="2" fill="#38bdf8"/>
+
+  <text x="26" y="50" font-size="26" font-weight="700" fill="#f0f6fc">SimATC</text>
+  <g>
+    <rect x="128" y="32" width="122" height="22" rx="11" fill="#facc15" fill-opacity=".14" stroke="#facc15"/>
+    <circle class="dot" cx="142" cy="43" r="4" fill="#facc15"/>
+    <text x="194" y="47.5" text-anchor="middle" font-size="10.5" font-weight="700" fill="#fde68a">EN DESARROLLO</text>
+  </g>
+  <text x="26" y="74" font-size="13" fill="#8b949e">Microsoft Flight Simulator 2024</text>
+  <text x="26" y="104" font-size="13" fill="#c9d1d9">Tráfico aéreo con IA y un</text>
+  <text x="26" y="124" font-size="13" fill="#c9d1d9">control de tránsito (ATC) propio</text>
+  <text x="26" y="144" font-size="12" fill="#6e7681">🔒 Repositorio privado</text>
+  <g font-size="11" font-weight="600">
+    <rect x="26" y="170" width="38" height="22" rx="11" fill="#38bdf8" fill-opacity=".14" stroke="#38bdf8"/>
+    <text x="45" y="185" text-anchor="middle" fill="#7dd3fc">C#</text>
+    <rect x="72" y="170" width="92" height="22" rx="11" fill="#22c55e" fill-opacity=".12" stroke="#22c55e"/>
+    <text x="118" y="185" text-anchor="middle" fill="#86efac">MSFS 2024</text>
+  </g>
+
+  <!-- radar -->
+  <circle cx="385" cy="110" r="80" fill="url(#bg)" stroke="#1f6f7f" stroke-width="1.5"/>
+  <g fill="none" stroke="#1f6f7f" stroke-width="1" opacity=".7">
+    <circle cx="385" cy="110" r="54"/><circle cx="385" cy="110" r="28"/>
+    <path d="M305 110 H465 M385 30 V190"/>
+  </g>
+  <g clip-path="url(#scope)">
+    <g>
+      <animateTransform attributeName="transform" type="rotate" from="0 385 110" to="360 385 110" dur="4s" repeatCount="indefinite"/>
+      <path d="M385 110 L465 110 A80 80 0 0 0 441.6 53.4 Z" fill="#38bdf8" opacity=".18"/>
+      <path d="M385 110 L465 110" stroke="#7dd3fc" stroke-width="2"/>
+    </g>
+    <!-- otros blips -->
+    <circle cx="350" cy="70" r="3" fill="#4ade80">
+      <animate attributeName="opacity" values="1;0.15;1" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    <circle cx="420" cy="160" r="3" fill="#4ade80">
+      <animate attributeName="opacity" values="0.15;1;0.15" dur="4s" repeatCount="indefinite"/>
+    </circle>
+    <!-- ruta -->
+    <path d="M318 165 Q370 95 455 70" fill="none" stroke="#38bdf8" stroke-width="1" stroke-dasharray="4 4" opacity=".6"/>
+    <!-- avión -->
+    <g>
+      <animateMotion dur="6s" repeatCount="indefinite" rotate="auto" path="M318 165 Q370 95 455 70"/>
+      <path d="M9 0 L-1 -1.6 L-4 -8 L-6.5 -8 L-4.5 -1.6 L-8 -1.3 L-9.5 -4 L-11 -4 L-10.5 0 L-11 4 L-9.5 4 L-8 1.3 L-4.5 1.6 L-6.5 8 L-4 8 L-1 1.6 Z" fill="#f0f6fc"/>
+    </g>
+    <g font-size="9" font-weight="700" fill="#7dd3fc">
+      <animateMotion dur="6s" repeatCount="indefinite" path="M318 165 Q370 95 455 70"/>
+      <text x="8" y="-10">SKY214</text>
+      <text x="8" y="0" fill="#4ade80" font-weight="600">FL350</text>
+    </g>
+  </g>
+</svg>
