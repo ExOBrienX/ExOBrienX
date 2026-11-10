@@ -37,8 +37,11 @@
 ### 📊 Estadísticas
 
 <p align="center">
-  <img src="https://github-readme-stats.vercel.app/api?username=ExOBrienX&show_icons=true&theme=tokyonight&hide_border=true" height="165" />
-  <img src="https://github-readme-stats.vercel.app/api/top-langs/?username=ExOBrienX&layout=compact&theme=tokyonight&hide_border=true" height="165" />
+  <img src="https://github-profile-summary-cards.vercel.app/api/cards/stats?username=ExOBrienX&theme=tokyonight" width="49%" />
+  <img src="https://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=ExOBrienX&theme=tokyonight" width="49%" />
+</p>
+<p align="center">
+  <img src="https://streak-stats.demolab.com?user=ExOBrienX&theme=tokyonight&hide_border=true&locale=es" width="80%" />
 </p>
 
 <img src="https://capsule-render.vercel.app/api?type=waving&color=0:f97316,50:38bdf8,100:7c5cff&height=100&section=footer" width="100%" />
