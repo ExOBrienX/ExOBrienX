@@ -27,10 +27,6 @@
   }
   .flow .okk { opacity: 0; animation: okk 3.6s steps(1) infinite; }
   @keyframes okk { 0%, 55% { opacity: 0; } 56%, 92% { opacity: 1; } 93%, 100% { opacity: 0; } }
-  ul.sec { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; grid-template-columns: repeat(auto-fit, minmax(290px, 1fr)); }
-  ul.sec li { background: var(--panel); border: 2px solid var(--g3); padding: 12px 14px 12px 40px; position: relative; font-size: 14px; }
-  ul.sec li::before { content: ""; position: absolute; left: 14px; top: 17px; width: 12px; height: 12px; background: var(--am); }
-  ul.sec b { color: var(--wh); }
 </style>
 </head>
 <body>
@@ -121,20 +117,6 @@
   </section>
 
   <section>
-    <h2>Seguridad</h2>
-    <ul class="sec">
-      <li><b>Sesiones revocables.</b> Tokens JWT de corta duración y un registro de sesiones que permite cortarlas al instante.</li>
-      <li><b>Tokens de renovación rotativos.</b> Si uno ya usado vuelve a aparecer, se corta toda la cadena.</li>
-      <li><b>Lista blanca de direcciones.</b> Cada empresa opera solo desde sus direcciones autorizadas, y la dirección se comprueba contra la empresa del token.</li>
-      <li><b>Claves y credenciales.</b> Contraseñas con BCrypt. Las credenciales que deben poder mostrarse se cifran con AES-GCM y la llave vive fuera de la base.</li>
-      <li><b>Bloqueo y límite de peticiones.</b> Bloqueo temporal tras intentos fallidos y un límite por dirección, más estricto en las rutas públicas.</li>
-      <li><b>Sin inyección SQL.</b> Todas las consultas son parametrizadas, y una prueba automática revisa el código para confirmarlo.</li>
-      <li><b>Datos personales.</b> La telemetría no guarda tokens ni cuerpos de las peticiones.</li>
-      <li><b>Secretos fuera del repositorio.</b> Ninguna clave se escribe en un archivo versionado.</li>
-    </ul>
-  </section>
-
-  <section>
     <h2>Lo interesante por dentro</h2>
     <ol class="deep">
       <li><h3>Clean Architecture, con las dependencias hacia el centro</h3><p>Cuatro capas: dominio, aplicación, infraestructura y API. El dominio no depende de nada. El panel de administración referencia solo la capa de aplicación, de donde toma los contratos que comparte con la API.</p></li>
@@ -154,7 +136,7 @@
       <div class="stat"><b>64</b><span>endpoints en 10 controladores</span></div>
       <div class="stat"><b>15</b><span>migraciones de base de datos</span></div>
       <div class="stat"><b>148</b><span>commits como único autor</span></div>
-      <div class="stat"><b>34 / 34</b><span>instrucciones del encargo cumplidas</span></div>
+      <div class="stat"><b>~49.000</b><span>líneas de C#, pruebas incluidas</span></div>
     </div>
   </section>
 
