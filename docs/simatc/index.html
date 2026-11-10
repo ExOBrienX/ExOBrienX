@@ -1,0 +1,307 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SimATC — ATC y tráfico IA para MSFS 2024</title>
+<meta name="description" content="SimATC: un controlador aéreo y un aeropuerto vivo para Microsoft Flight Simulator 2024. Proyecto personal en C# / .NET.">
+<link rel="icon" type="image/png" href="logo.png">
+<style>
+  :root {
+    --bg: #0a0f0a; --panel: #0c150d; --scr: #07130a;
+    --g: #39ff14; --g2: #2ea043; --g3: #14532d; --g4: #0f2a17;
+    --txt: #cfe9cb; --dim: #8fb98a; --wh: #d6ffd0;
+    --am: #ffb000; --cy: #00e5ff; --mg: #ff2e88;
+    --mono: "Cascadia Code", Consolas, "Courier New", monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    margin: 0; background: var(--bg); color: var(--txt);
+    font-family: var(--mono); font-size: 15px; line-height: 1.65;
+  }
+  /* líneas de barrido tipo CRT, muy suaves */
+  body::after {
+    content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 50;
+    background: repeating-linear-gradient(to bottom, rgba(0,0,0,.16) 0 1px, transparent 1px 4px);
+  }
+  a { color: var(--g); }
+  a:hover { color: var(--wh); }
+  .wrap { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
+
+  /* cabecera */
+  header.top { border-bottom: 2px solid var(--g3); }
+  header.top .wrap { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding-block: 12px; font-size: 13px; }
+  header.top a { text-decoration: none; color: var(--g2); }
+  header.top a:hover { color: var(--g); }
+
+  .hero { display: grid; grid-template-columns: 1.15fr .85fr; gap: 32px; align-items: center; padding: 48px 0 40px; }
+  .hero img.title { width: min(100%, 420px); height: auto; display: block; }
+  .hero h1 { position: absolute; left: -9999px; }
+  .lead { font-size: 18px; color: var(--wh); margin: 22px 0 14px; line-height: 1.5; }
+  .sub { color: var(--dim); margin: 0 0 20px; }
+  .chips { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; padding: 0; list-style: none; }
+  .chips li { border: 2px solid var(--g3); padding: 2px 10px; font-size: 12px; font-weight: 700; color: var(--g); background: var(--bg); }
+  .chips li.wip { border-color: var(--am); color: var(--am); }
+  .chips li.wip::before { content: ""; display: inline-block; width: 8px; height: 8px; background: var(--am); margin-right: 8px; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+
+  .radar { width: 100%; max-width: 380px; justify-self: center; }
+  .radar .sweep { transform-origin: 210px 210px; animation: sweep 5s steps(60) infinite; }
+  @keyframes sweep { to { transform: rotate(360deg); } }
+  .radar .blip { animation: blink 3s steps(1) infinite; }
+
+  /* secciones */
+  section { padding: 34px 0; border-top: 2px dashed var(--g4); }
+  h2 { font-size: 20px; letter-spacing: 2px; text-transform: uppercase; color: var(--g); margin: 0 0 18px; }
+  h2::before { content: "> "; color: var(--g2); }
+  h2::after { content: ""; display: inline-block; width: 11px; height: 18px; background: var(--g); margin-left: 8px; vertical-align: -2px; animation: blink 1s steps(1) infinite; }
+  h3 { font-size: 15px; color: var(--wh); margin: 0 0 6px; }
+  p { margin: 0 0 12px; }
+
+  .grid { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); }
+  .card { background: var(--panel); border: 2px solid var(--g3); padding: 16px 18px; position: relative; }
+  .card::before, .card::after { content: ""; position: absolute; width: 6px; height: 6px; background: var(--bg); }
+  .card::before { top: -2px; left: -2px; } .card::after { bottom: -2px; right: -2px; }
+  .card p { margin: 0; color: var(--txt); font-size: 14px; }
+  .card .tag { font-size: 11px; font-weight: 700; color: var(--g2); letter-spacing: 1px; display: block; margin-bottom: 6px; }
+
+  ol.deep { list-style: none; counter-reset: n; margin: 0; padding: 0; display: grid; gap: 14px; }
+  ol.deep li { counter-increment: n; background: var(--panel); border-left: 4px solid var(--g2); padding: 14px 18px 14px 62px; position: relative; }
+  ol.deep li::before { content: counter(n, decimal-leading-zero); position: absolute; left: 16px; top: 12px; font-size: 22px; font-weight: 700; color: var(--g3); }
+  ol.deep p { margin: 0; font-size: 14px; }
+  ol.deep .fact { color: var(--am); }
+
+  .stats { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+  .stat { background: var(--scr); border: 2px solid var(--g3); padding: 14px; text-align: center; }
+  .stat b { display: block; font-size: 26px; color: var(--g); line-height: 1.2; }
+  .stat span { font-size: 12px; color: var(--dim); }
+
+  .arch { display: grid; gap: 10px; grid-template-columns: repeat(4, 1fr); }
+  .arch .box { border: 2px solid var(--g2); background: var(--scr); padding: 12px; }
+  .arch .box.core { grid-column: span 2; border-color: var(--g); }
+  .arch .box b { color: var(--wh); display: block; }
+  .arch .box span { font-size: 13px; color: var(--dim); }
+  .arch .tools { grid-column: 1 / -1; border-style: dashed; border-color: var(--g3); }
+  .note { color: var(--dim); font-size: 13px; margin-top: 12px; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid var(--g4); vertical-align: top; }
+  th { color: var(--g2); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; width: 190px; }
+
+  .cols { display: grid; gap: 14px; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .cols ul { margin: 0; padding-left: 18px; font-size: 14px; }
+  .cols li { margin-bottom: 6px; }
+  .ok h3 { color: var(--g); } .test h3 { color: var(--am); } .todo h3 { color: var(--dim); }
+  .ok { border-color: var(--g2); } .test { border-color: #6b4a00; }
+
+  footer { border-top: 2px solid var(--g3); padding: 26px 0 50px; font-size: 13px; color: var(--dim); }
+  footer .links { display: flex; flex-wrap: wrap; gap: 18px; margin-bottom: 14px; font-size: 14px; }
+
+  @media (max-width: 760px) {
+    .hero { grid-template-columns: 1fr; padding-top: 32px; }
+    .arch { grid-template-columns: 1fr 1fr; }
+    th { width: 120px; }
+    ol.deep li { padding-left: 54px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; }
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <span>EXO-OS 1.0 / proyectos / simatc</span>
+    <a href="https://github.com/ExOBrienX">&lt; volver al perfil</a>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="hero">
+    <div>
+      <h1>SimATC</h1>
+      <img class="title" src="titulo.svg" alt="SimATC" width="356" height="76">
+      <p class="lead">Un controlador aéreo y un aeropuerto vivo para Microsoft Flight Simulator 2024.</p>
+      <p class="sub">Controla tu vuelo de puesto a puesto con fraseología real y llena cualquier aeropuerto del mundo con tráfico que rueda, despega y aterriza solo. Hecho únicamente con lógica: sin modelos 3D nuevos y sin bajar los FPS del simulador.</p>
+      <ul class="chips">
+        <li class="wip">EN DESARROLLO</li>
+        <li>PROYECTO PERSONAL</li>
+        <li>C# / .NET 10</li>
+        <li>AVALONIA</li>
+        <li>SIMCONNECT</li>
+      </ul>
+    </div>
+
+    <svg class="radar" viewBox="0 0 420 420" role="img" aria-label="Animación decorativa de un radar con aviones">
+      <defs><clipPath id="scope"><circle cx="210" cy="210" r="196"/></clipPath></defs>
+      <circle cx="210" cy="210" r="198" fill="#07130a" stroke="#2ea043" stroke-width="3"/>
+      <g fill="none" stroke="#14532d" stroke-width="2">
+        <circle cx="210" cy="210" r="140"/><circle cx="210" cy="210" r="82"/><circle cx="210" cy="210" r="28"/>
+        <path d="M12 210H408M210 12V408"/>
+      </g>
+      <g clip-path="url(#scope)">
+        <!-- pistas paralelas -->
+        <g transform="rotate(-18 210 210)" fill="#2ea043">
+          <rect x="188" y="170" width="6" height="80"/><rect x="226" y="170" width="6" height="80"/>
+        </g>
+        <!-- rutas -->
+        <g fill="none" stroke="#00e5ff" stroke-width="1.5" stroke-dasharray="5 5" opacity=".55">
+          <path id="r1" d="M40 360 Q150 300 196 232"/>
+          <path id="r2" d="M236 190 Q300 110 390 70"/>
+          <path id="r3" d="M380 330 Q300 300 250 250"/>
+        </g>
+        <g class="sweep">
+          <path d="M210 210 L408 210 A198 198 0 0 0 381 111 Z" fill="#39ff14" opacity=".13"/>
+          <rect x="210" y="208" width="198" height="4" fill="#39ff14"/>
+        </g>
+        <rect class="blip" x="120" y="110" width="7" height="7" fill="#39ff14"/>
+        <rect class="blip" x="300" y="170" width="7" height="7" fill="#39ff14" style="animation-delay:1.5s"/>
+        <!-- aviones -->
+        <g>
+          <animateMotion dur="14s" repeatCount="indefinite" rotate="auto"><mpath href="#r1"/></animateMotion>
+          <path d="M12 0 L-1 -2 L-5 -11 L-8 -11 L-6 -2 L-11 -2 L-13 -6 L-15 -6 L-14 0 L-15 6 L-13 6 L-11 2 L-6 2 L-8 11 L-5 11 L-1 2 Z" fill="#d6ffd0"/>
+        </g>
+        <g font-family="Consolas, monospace" font-size="11" font-weight="700" fill="#00e5ff">
+          <animateMotion dur="14s" repeatCount="indefinite"><mpath href="#r1"/></animateMotion>
+          <text x="14" y="-12">EXO214</text><text x="14" y="0" fill="#39ff14">ILS 36L</text>
+        </g>
+        <g>
+          <animateMotion dur="11s" repeatCount="indefinite" rotate="auto"><mpath href="#r2"/></animateMotion>
+          <path d="M12 0 L-1 -2 L-5 -11 L-8 -11 L-6 -2 L-11 -2 L-13 -6 L-15 -6 L-14 0 L-15 6 L-13 6 L-11 2 L-6 2 L-8 11 L-5 11 L-1 2 Z" fill="#d6ffd0"/>
+        </g>
+        <g font-family="Consolas, monospace" font-size="11" font-weight="700" fill="#00e5ff">
+          <animateMotion dur="11s" repeatCount="indefinite"><mpath href="#r2"/></animateMotion>
+          <text x="-64" y="-12">SIM101</text><text x="-64" y="0" fill="#ffb000">SID</text>
+        </g>
+        <g>
+          <animateMotion dur="17s" repeatCount="indefinite" rotate="auto"><mpath href="#r3"/></animateMotion>
+          <path d="M12 0 L-1 -2 L-5 -11 L-8 -11 L-6 -2 L-11 -2 L-13 -6 L-15 -6 L-14 0 L-15 6 L-13 6 L-11 2 L-6 2 L-8 11 L-5 11 L-1 2 Z" fill="#d6ffd0"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <section>
+    <h2>El problema</h2>
+    <p>El ATC que trae el simulador es básico: fraseología pobre, tráfico sin coordinación y aeropuertos sin vida en tierra. Los complementos que existen resuelven partes por separado: uno hace de ATC, otro da servicio de tierra, otro inyecta tráfico.</p>
+    <p>SimATC busca juntarlo en un solo programa que funcione al abrirlo y casi no gaste recursos, porque el simulador ya usa toda la GPU.</p>
+  </section>
+
+  <section>
+    <h2>Qué hace</h2>
+    <div class="grid">
+      <div class="card"><span class="tag">ATC</span><h3>Control de todo el vuelo</h3><p>Delivery, Ground, Torre, Salida, Centro, Aproximación y la Torre y el Ground del destino. Fraseología OACI en español o inglés. Te comunicas por texto o con un copiloto automático, y el ATC responde con voz.</p></div>
+      <div class="card"><span class="tag">PLAN</span><h3>Plan de vuelo desde SimBrief</h3><p>Briefing, SID, STAR y aproximación dibujadas como en el FMS, autorización con squawk, pushback con personal de tierra y rodaje por las calles reales del aeropuerto.</p></div>
+      <div class="card"><span class="tag">TRÁFICO</span><h3>Cualquier aeropuerto del mundo</h3><p>Vuelos reales por indicativo, con rutas verificadas. Los aviones estacionan, hacen pushback, ruedan respetando cruces y sentidos, esperan en cola, despegan y llegan secuenciados.</p></div>
+      <div class="card"><span class="tag">RADIO</span><h3>Una frecuencia con vida</h3><p>Escuchas a Ground, Torre, Aproximación y Centro hablar con los demás aviones, no solo contigo.</p></div>
+      <div class="card"><span class="tag">RADAR</span><h3>Radar en la app y en la cabina</h3><p>Una ventana de radar en el escritorio y una app para la tableta del avión (EFB), con rutas, procedimientos y la ficha de cada vuelo.</p></div>
+      <div class="card"><span class="tag">RENDIMIENTO</span><h3>Bajo consumo</h3><p>Solo los vuelos cercanos existen dentro del simulador. El resto sigue volando de forma virtual y ningún avión desaparece a la vista.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Lo interesante por dentro</h2>
+    <ol class="deep">
+      <li><h3>Un motor de tráfico que no asigna memoria</h3><p>El motor avanza a cientos de aviones en pasos fijos. En el ciclo principal no hay LINQ, closures ni asignaciones: buffers reutilizados y estructuras por valor. Un test lo verifica midiendo los bytes asignados por paso. <span class="fact">Cada paso tarda menos de 0,5 ms con decenas de aviones en tierra en Madrid-Barajas.</span></p></li>
+      <li><h3>Niveles de detalle por distancia</h3><p>Todos los vuelos existen en el motor, pero solo los que están a menos de 60 millas náuticas se crean en el simulador. Los demás se actualizan una vez por segundo y reaparecen al acercarse, con histéresis para que no entren y salgan en el borde.</p></li>
+      <li><h3>Rodaje sin choques ni bloqueos</h3><p>Cada avión reserva los cruces que tiene adelante y mantiene distancia con el que le precede. Un detector de ciclos encuentra los bloqueos (A espera a B y B espera a A) y los resuelve como lo haría un controlador: cede el de menor prioridad o recibe un desvío.</p></li>
+      <li><h3>Reparto de pistas automático</h3><p>No existe una base mundial de qué pistas usa cada aeropuerto, así que SimATC lo deduce. Prueba cada reparto que permite el viento y le asigna un costo con Dijkstra sobre el grafo de rodaje. <span class="fact">Para Barajas llega por su cuenta a las configuraciones reales de viento norte y viento sur.</span></p></li>
+      <li><h3>Planes de vuelo como los de un FMS</h3><p>Cada vuelo tiene SID, ruta, STAR y aproximación que empalman entre sí. La ruta sale de vuelos reales de VATSIM o de una búsqueda A* por las aerovías del simulador, y un validador descarta rodeos y medias vueltas.</p></li>
+      <li><h3>Un ATC de reglas, no un modelo de lenguaje</h3><p>Las decisiones son reglas verificables: separación, secuencia de llegadas, pista ocupada, motor y al aire. Las frases salen de plantillas basadas en documentos OACI y CAP 413, y la colación del piloto se valida campo por campo.</p></li>
+      <li><h3>Se prueba sin abrir el simulador</h3><p>Una herramienta corre el motor completo contra un simulador falso, acelerado hasta 200 veces, con escenarios reproducibles por semilla. Cada error visto en vuelo se convierte primero en un test y después se arregla.</p></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Números</h2>
+    <div class="stats">
+      <div class="stat"><b>~35.000</b><span>líneas de C#</span></div>
+      <div class="stat"><b>600+</b><span>tests automáticos</span></div>
+      <div class="stat"><b>103</b><span>decisiones de diseño documentadas</span></div>
+      <div class="stat"><b>626 mil</b><span>rutas reales por indicativo</span></div>
+      <div class="stat"><b>3.790</b><span>aeropuertos con datos</span></div>
+      <div class="stat"><b>200x</b><span>velocidad de simulación en pruebas</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Arquitectura</h2>
+    <div class="arch">
+      <div class="box"><b>SimATC.App</b><span>Interfaz en Avalonia (MVVM): radar, comunicaciones, plan, configuración</span></div>
+      <div class="box core"><b>SimATC.Core</b><span>Toda la lógica: tráfico, ATC, rodaje, planes de vuelo y fraseología. No conoce el simulador ni la interfaz.</span></div>
+      <div class="box"><b>SimATC.Sim</b><span>Puente con SimConnect</span></div>
+      <div class="box"><b>SimATC.Voice</b><span>Voz local en la CPU</span></div>
+      <div class="box"><b>Headless</b><span>Simulación acelerada sin el simulador</span></div>
+      <div class="box"><b>Probe</b><span>Consola de diagnóstico</span></div>
+      <div class="box"><b>EfbRadar</b><span>App de la tableta del avión, en TypeScript</span></div>
+    </div>
+    <p class="note">El núcleo habla con el simulador a través de una interfaz, por eso se puede probar completo contra un simulador falso.</p>
+  </section>
+
+  <section>
+    <h2>Tecnologías</h2>
+    <table>
+      <tr><th>Lenguaje</th><td>C# sobre .NET 10</td></tr>
+      <tr><th>Interfaz</th><td>Avalonia con MVVM (CommunityToolkit)</td></tr>
+      <tr><th>Simulador</th><td>SimConnect, la API oficial de MSFS 2024</td></tr>
+      <tr><th>Pruebas</th><td>xUnit y BenchmarkDotNet</td></tr>
+      <tr><th>Voz</th><td>Piper, ejecutada en la CPU</td></tr>
+      <tr><th>App de cabina</th><td>TypeScript</td></tr>
+      <tr><th>Algoritmos</th><td>Dijkstra, A*, detección de ciclos, reserva de recursos</td></tr>
+      <tr><th>Datos</th><td>Aeropuertos y procedimientos leídos del propio simulador; rutas públicas con licencia CC0</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>Estado</h2>
+    <div class="cols">
+      <div class="card ok"><h3>Probado en vuelo</h3><ul>
+        <li>ATC de puesto a puesto por texto o copiloto, en español e inglés</li>
+        <li>Voz del ATC</li>
+        <li>Plan desde SimBrief y pushback</li>
+        <li>Tráfico automático en cualquier aeropuerto</li>
+        <li>Radar en la app y en la cabina</li>
+      </ul><p class="note">Vuelos de prueba en Santiago, Concepción y Madrid.</p></div>
+      <div class="card test"><h3>Construido, en prueba</h3><ul>
+        <li>Reparto automático de pistas</li>
+        <li>Pistas de uso mixto y cambio de pista en vuelo</li>
+        <li>Pista en uso según el METAR real</li>
+        <li>Fraseología FAA en Estados Unidos</li>
+        <li>ATIS</li>
+      </ul></div>
+      <div class="card todo"><h3>Pendiente</h3><ul>
+        <li>Hablarle al ATC por voz</li>
+        <li>Vuelo IFR completo del piloto</li>
+        <li>Panel completo en la cabina</li>
+        <li>Pulido general</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Lo que aprendí</h2>
+    <div class="grid">
+      <div class="card"><h3>Medir antes de optimizar</h3><p>Y medir con varias semillas antes de dar algo por arreglado. Comparar corridas evitó aceptar arreglos que solo funcionaban por suerte.</p></div>
+      <div class="card"><h3>Los mismos problemas que un sistema grande</h3><p>Aviones que reservan recursos se comportan como un sistema distribuido pequeño: bloqueos, inanición y estado que queda colgado.</p></div>
+      <div class="card"><h3>Los datos reales primero</h3><p>Casi todo lo que parecía un error del algoritmo era un dato mal leído o una suposición equivocada sobre el mundo real.</p></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="links">
+      <a href="https://github.com/ExOBrienX">GitHub: ExOBrienX</a>
+      <a href="https://www.linkedin.com/in/marco-paredes-ram%C3%ADrez-3a2082268">LinkedIn</a>
+    </div>
+    <p>Proyecto personal de Marco, estudiante de Ingeniería en Informática. El código es privado mientras el proyecto está en desarrollo.</p>
+    <p>SimATC no está afiliado a Microsoft, Asobo, SimBrief ni VATSIM. Solo usa APIs oficiales y código propio.</p>
+  </div>
+</footer>
+
+</body>
+</html>
