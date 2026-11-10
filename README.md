@@ -1,47 +1,26 @@
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=waving&color=0:7c5cff,50:38bdf8,100:f97316&height=170&section=header&text=ExOBrienX&fontSize=48&fontColor=ffffff&animation=fadeIn&fontAlignY=38" />
+  <img src="assets/header.svg" width="100%" alt="ExOBrienX — Hola, soy Marco. C# / TypeScript / Java / Python" />
 </p>
 
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=20&pause=1000&color=38BDF8&center=true&vCenter=true&width=620&lines=Hola!+Soy+Marco+%F0%9F%91%8B;C%23+%C2%B7+TypeScript+%C2%B7+Java+%C2%B7+Python;Me+gusta+crear+herramientas+y+simuladores+%E2%9C%88%EF%B8%8F" alt="Typing SVG" />
+  <img src="assets/player.svg" width="100%" alt="Marco — Ingeniería en Informática, Instituto Profesional Santo Tomás. Práctica profesional finalizada, titulación en curso. Trabajando en SimATC. Skills: C#, TypeScript, Java, Python, JavaScript" />
 </p>
-
-### 🙋 Sobre mí
-
-- 🎓 Ingeniería en Informática – Instituto Profesional Santo Tomás (práctica profesional finalizada, en proceso de titulación)
-- 🔭 Trabajando en **SimATC**, tráfico IA con ATC propio para MSFS 2024
-- 🎮 Me gustan los videojuegos, la simulación y automatizar cosas
-- 📫 Conéctate conmigo:
-
-<a href="https://www.linkedin.com/in/marco-paredes-ram%C3%ADrez-3a2082268"><img src="https://img.shields.io/badge/LinkedIn-0A66C2?style=for-the-badge&logo=linkedin&logoColor=white" /></a>
-
-### 🛠️ Tecnologías
-
-<p>
-  <img src="https://img.shields.io/badge/C%23-512BD4?style=for-the-badge&logo=dotnet&logoColor=white" />
-  <img src="https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge&logo=typescript&logoColor=white" />
-  <img src="https://img.shields.io/badge/Java-ED8B00?style=for-the-badge&logo=openjdk&logoColor=white" />
-  <img src="https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white" />
-  <img src="https://img.shields.io/badge/JavaScript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black" />
-</p>
-
-### 🚀 Proyectos
 
 <p align="center">
-  <a href="https://github.com/ExOBrienX/PadPilot"><img src="assets/padpilot.svg" width="49%" alt="PadPilot" /></a>
-  <a href="https://github.com/ExOBrienX/UrbanReport"><img src="assets/urbanreport.svg" width="49%" alt="UrbanReport" /></a>
-  <a href="https://github.com/ExOBrienX/NTE_MacroPiano_Script"><img src="assets/piano.svg" width="49%" alt="NTE Piano Macro" /></a>
-  <img src="assets/simatc.svg" width="49%" alt="SimATC (en desarrollo)" />
+  <a href="https://www.linkedin.com/in/marco-paredes-ram%C3%ADrez-3a2082268"><img src="assets/linkedin.svg" height="46" alt="LinkedIn" /></a>
 </p>
 
-### 📊 Estadísticas
+<img src="assets/h-proyectos.svg" width="100%" alt="Proyectos" />
 
 <p align="center">
-  <img src="https://github-profile-summary-cards.vercel.app/api/cards/stats?username=ExOBrienX&theme=tokyonight" width="49%" />
-  <img src="https://github-profile-summary-cards.vercel.app/api/cards/most-commit-language?username=ExOBrienX&theme=tokyonight" width="49%" />
-</p>
-<p align="center">
-  <img src="https://streak-stats.demolab.com?user=ExOBrienX&theme=tokyonight&hide_border=true&locale=es" width="80%" />
+  <a href="https://github.com/ExOBrienX/PadPilot"><img src="assets/pad.svg" width="49%" alt="PadPilot — gestor de mandos para Windows (C#)" /></a>
+  <a href="https://github.com/ExOBrienX/UrbanReport"><img src="assets/urban.svg" width="49%" alt="UrbanReport — proyecto de título, reportes de incidencias urbanas (TypeScript)" /></a>
+  <a href="https://github.com/ExOBrienX/NTE_MacroPiano_Script"><img src="assets/piano.svg" width="49%" alt="Piano Macro — MIDI a pulsaciones de teclado (Python)" /></a>
+  <img src="assets/simatc.svg" width="49%" alt="SimATC — tráfico IA con ATC propio para MSFS 2024, en desarrollo (C#)" />
 </p>
 
-<img src="https://capsule-render.vercel.app/api?type=waving&color=0:f97316,50:38bdf8,100:7c5cff&height=100&section=footer" width="100%" />
+<img src="assets/h-stats.svg" width="100%" alt="Stats" />
+
+<p align="center">
+  <img src="https://streak-stats.demolab.com?user=ExOBrienX&background=0a0f0a&border=2ea043&stroke=14532d&ring=39ff14&fire=ffb000&currStreakNum=d6ffd0&sideNums=39ff14&currStreakLabel=39ff14&sideLabels=2ea043&dates=2ea043&locale=es&border_radius=0" width="70%" alt="Racha de contribuciones" />
+</p>
