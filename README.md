@@ -1,9 +1,9 @@
 <p align="center">
-  <img src="assets/header.svg" width="100%" alt="ExOBrienX — Hola, soy Marco. C# / TypeScript / Java / Python" />
+  <img src="assets/header.svg" width="100%" alt="ExOBrienX — Hola, soy Marco. Backend dev: C# / .NET / ASP.NET" />
 </p>
 
 <p align="center">
-  <img src="assets/player.svg" width="100%" alt="Marco — Ingeniería en Informática, Instituto Profesional Santo Tomás. Práctica profesional finalizada, titulación en curso. Trabajando en SimATC. Skills: C#, TypeScript, Java, Python, JavaScript" />
+  <img src="assets/player.svg" width="100%" alt="Marco — Ingeniería en Informática, Instituto Profesional Santo Tomás. Práctica profesional finalizada, titulación en curso. Backend dev. Trabajando en SimATC. Main: C#, .NET, ASP.NET. TypeScript. Bases de datos: PostgreSQL, MySQL. Básico: Java, Spring Boot. También: JavaScript, Python" />
 </p>
 
 <p align="center">
