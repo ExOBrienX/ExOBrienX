@@ -3,7 +3,7 @@
 </p>
 
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=20&pause=1000&color=38BDF8&center=true&vCenter=true&width=520&lines=Hola!+Soy+Marco+%F0%9F%91%8B;Desarrollador+C%23+%C2%B7+TypeScript+%C2%B7+Java+%C2%B7+Python;Me+gusta+crear+herramientas+y+simuladores+%E2%9C%88%EF%B8%8F" alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=20&pause=1000&color=38BDF8&center=true&vCenter=true&width=620&lines=Hola!+Soy+Marco+%F0%9F%91%8B;C%23+%C2%B7+TypeScript+%C2%B7+Java+%C2%B7+Python;Me+gusta+crear+herramientas+y+simuladores+%E2%9C%88%EF%B8%8F" alt="Typing SVG" />
 </p>
 
 ### 🙋 Sobre mí
