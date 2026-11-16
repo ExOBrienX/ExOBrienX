@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>LUAW — ATC y tráfico IA para MSFS 2024</title>
+<meta name="description" content="LUAW (Line Up And Wait): un controlador aéreo y un aeropuerto vivo para Microsoft Flight Simulator 2024. Software libre en C# / .NET, en beta.">
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="stylesheet" href="../proyecto.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <span>EXO-OS 1.0 / proyectos / luaw</span>
+    <a href="https://github.com/ExOBrienX">&lt; volver al perfil</a>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="hero">
+    <div>
+      <h1>LUAW</h1>
+      <img class="title" src="titulo.svg" alt="LUAW" width="236" height="76">
+      <p class="lead">Un controlador aéreo y un aeropuerto vivo para Microsoft Flight Simulator 2024.</p>
+      <p class="sub">LUAW viene de <b>Line Up And Wait</b>, la instrucción de la Torre para alinearse en la pista.</p>
+      <p class="sub">Controla tu vuelo de puesto a puesto con fraseología real y llena cualquier aeropuerto del mundo con tráfico que rueda, despega y aterriza solo. Hecho únicamente con lógica: sin modelos 3D nuevos y sin bajar los FPS del simulador.</p>
+      <ul class="chips">
+        <li class="wip">BETA PÚBLICA</li>
+        <li>SOFTWARE LIBRE · GPL-3.0</li>
+        <li>C# / .NET 10</li>
+        <li>AVALONIA</li>
+        <li>SIMCONNECT</li>
+      </ul>
+    </div>
+
+    <svg class="radar" viewBox="0 0 420 420" role="img" aria-label="Animación decorativa de un radar con aviones">
+      <defs><clipPath id="scope"><circle cx="210" cy="210" r="196"/></clipPath></defs>
+      <circle cx="210" cy="210" r="198" fill="#07130a" stroke="#2ea043" stroke-width="3"/>
+      <g fill="none" stroke="#14532d" stroke-width="2">
+        <circle cx="210" cy="210" r="140"/><circle cx="210" cy="210" r="82"/><circle cx="210" cy="210" r="28"/>
+        <path d="M12 210H408M210 12V408"/>
+      </g>
+      <g clip-path="url(#scope)">
+        <!-- pistas paralelas -->
+        <g transform="rotate(-18 210 210)" fill="#2ea043">
+          <rect x="188" y="170" width="6" height="80"/><rect x="226" y="170" width="6" height="80"/>
+        </g>
+        <!-- rutas -->
+        <g fill="none" stroke="#00e5ff" stroke-width="1.5" stroke-dasharray="5 5" opacity=".55">
+          <path id="r1" d="M40 360 Q150 300 196 232"/>
+          <path id="r2" d="M236 190 Q300 110 390 70"/>
+          <path id="r3" d="M380 330 Q300 300 250 250"/>
+        </g>
+        <g class="sweep">
+          <path d="M210 210 L408 210 A198 198 0 0 0 381 111 Z" fill="#39ff14" opacity=".13"/>
+          <rect x="210" y="208" width="198" height="4" fill="#39ff14"/>
+        </g>
+        <rect class="blip" x="120" y="110" width="7" height="7" fill="#39ff14"/>
+        <rect class="blip" x="300" y="170" width="7" height="7" fill="#39ff14" style="animation-delay:1.5s"/>
+        <!-- aviones -->
+        <g>
+          <animateMotion dur="14s" repeatCount="indefinite" rotate="auto"><mpath href="#r1"/></animateMotion>
+          <path d="M12 0 L-1 -2 L-5 -11 L-8 -11 L-6 -2 L-11 -2 L-13 -6 L-15 -6 L-14 0 L-15 6 L-13 6 L-11 2 L-6 2 L-8 11 L-5 11 L-1 2 Z" fill="#d6ffd0"/>
+        </g>
+        <g font-family="Consolas, monospace" font-size="11" font-weight="700" fill="#00e5ff">
+          <animateMotion dur="14s" repeatCount="indefinite"><mpath href="#r1"/></animateMotion>
+          <text x="14" y="-12">EXO214</text><text x="14" y="0" fill="#39ff14">ILS 36L</text>
+        </g>
+        <g>
+          <animateMotion dur="11s" repeatCount="indefinite" rotate="auto"><mpath href="#r2"/></animateMotion>
+          <path d="M12 0 L-1 -2 L-5 -11 L-8 -11 L-6 -2 L-11 -2 L-13 -6 L-15 -6 L-14 0 L-15 6 L-13 6 L-11 2 L-6 2 L-8 11 L-5 11 L-1 2 Z" fill="#d6ffd0"/>
+        </g>
+        <g font-family="Consolas, monospace" font-size="11" font-weight="700" fill="#00e5ff">
+          <animateMotion dur="11s" repeatCount="indefinite"><mpath href="#r2"/></animateMotion>
+          <text x="-64" y="-12">SIM101</text><text x="-64" y="0" fill="#ffb000">SID</text>
+        </g>
+        <g>
+          <animateMotion dur="17s" repeatCount="indefinite" rotate="auto"><mpath href="#r3"/></animateMotion>
+          <path d="M12 0 L-1 -2 L-5 -11 L-8 -11 L-6 -2 L-11 -2 L-13 -6 L-15 -6 L-14 0 L-15 6 L-13 6 L-11 2 L-6 2 L-8 11 L-5 11 L-1 2 Z" fill="#d6ffd0"/>
+        </g>
+      </g>
+    </svg>
+  </div>
+
+  <section>
+    <h2>El problema</h2>
+    <p>El ATC que trae el simulador es básico: fraseología pobre, tráfico sin coordinación y aeropuertos sin vida en tierra.</p>
+    <p>LUAW junta el control de tu vuelo y un aeropuerto con vida en un solo programa que funciona al abrirlo y casi no gasta recursos, porque el simulador ya usa toda la GPU.</p>
+  </section>
+
+  <section>
+    <h2>Qué hace</h2>
+    <div class="grid">
+      <div class="card"><span class="tag">ATC</span><h3>Control de todo el vuelo</h3><p>Delivery, Ground, Torre, Salida, Centro, Aproximación y la Torre y el Ground del destino. Fraseología OACI en español o inglés, y FAA en Estados Unidos. Te comunicas por texto, por voz con tecla para hablar o con un copiloto automático, y el ATC responde con voz.</p></div>
+      <div class="card"><span class="tag">PLAN</span><h3>Plan de vuelo desde SimBrief</h3><p>Briefing, SID, STAR y aproximación dibujadas como en el FMS, autorización con squawk, pushback con personal de tierra, rodaje por las calles reales y vectores a la final cuando la ruta no empalma.</p></div>
+      <div class="card"><span class="tag">TRÁFICO</span><h3>Cualquier aeropuerto del mundo</h3><p>Vuelos reales por indicativo, con rutas verificadas. Los aviones estacionan, hacen pushback, ruedan respetando cruces y sentidos, esperan en cola, despegan y llegan secuenciados.</p></div>
+      <div class="card"><span class="tag">RADIO</span><h3>Una frecuencia con vida</h3><p>Escuchas a Ground, Torre, Aproximación y Centro hablar con los demás aviones, no solo contigo.</p></div>
+      <div class="card"><span class="tag">RADAR</span><h3>Radar en la app y en la cabina</h3><p>Una ventana de radar en el escritorio y una app para la tableta del avión (EFB), con rutas, procedimientos y la ficha de cada vuelo.</p></div>
+      <div class="card"><span class="tag">RENDIMIENTO</span><h3>Bajo consumo</h3><p>Solo los vuelos cercanos existen dentro del simulador. El resto sigue volando de forma virtual y ningún avión desaparece a la vista.</p></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Probarlo</h2>
+    <div class="grid">
+      <a class="card" style="text-decoration:none;color:inherit;display:block" href="https://github.com/ExOBrienX/LUAW/releases/latest"><span class="tag">DESCARGA</span><h3>Última versión</h3><p>Zip para Windows, sin instalar nada más. Necesitas MSFS 2024.</p></a>
+      <a class="card" style="text-decoration:none;color:inherit;display:block" href="https://github.com/ExOBrienX/LUAW"><span class="tag">CÓDIGO</span><h3>Repositorio en GitHub</h3><p>Código fuente, documentación y licencias.</p></a>
+      <a class="card" style="text-decoration:none;color:inherit;display:block" href="https://forms.gle/voKhCbMmKeNZTsLP9"><span class="tag">FEEDBACK</span><h3>Comentarios y bugs</h3><p>Formulario anónimo, sin iniciar sesión.</p></a>
+      <a class="card" style="text-decoration:none;color:inherit;display:block" href="https://ko-fi.com/exo_brienx"><span class="tag">APOYAR</span><h3>Ko-fi</h3><p>LUAW es gratis. Si te gusta, puedes apoyarlo con una donación voluntaria.</p></a>
+    </div>
+  </section>
+
+  <section>
+    <h2>Lo interesante por dentro</h2>
+    <ol class="deep">
+      <li><h3>Un motor de tráfico que no asigna memoria</h3><p>El motor avanza a cientos de aviones en pasos fijos. En el ciclo principal no hay LINQ, closures ni asignaciones: buffers reutilizados y estructuras por valor. Un test lo verifica midiendo los bytes asignados por paso. <span class="fact">Cada paso tarda menos de 0,5 ms con decenas de aviones en tierra en Madrid-Barajas.</span></p></li>
+      <li><h3>Niveles de detalle por distancia</h3><p>Todos los vuelos existen en el motor, pero solo los que están a menos de 60 millas náuticas se crean en el simulador. Los demás se actualizan una vez por segundo y reaparecen al acercarse, con histéresis para que no entren y salgan en el borde.</p></li>
+      <li><h3>Rodaje sin choques ni bloqueos</h3><p>Cada avión reserva los cruces que tiene adelante y mantiene distancia con el que le precede. Un detector de ciclos encuentra los bloqueos (A espera a B y B espera a A) y los resuelve como lo haría un controlador: cede el de menor prioridad o recibe un desvío.</p></li>
+      <li><h3>Reparto de pistas automático</h3><p>No existe una base mundial de qué pistas usa cada aeropuerto, así que LUAW lo deduce. Prueba cada reparto que permite el viento y le asigna un costo con Dijkstra sobre el grafo de rodaje. <span class="fact">Para Barajas llega por su cuenta a las configuraciones reales de viento norte y viento sur.</span></p></li>
+      <li><h3>Planes de vuelo como los de un FMS</h3><p>Cada vuelo tiene SID, ruta, STAR y aproximación que empalman entre sí. La ruta sale de vuelos reales de VATSIM o de una búsqueda A* por las aerovías del simulador, y un validador descarta rodeos y medias vueltas.</p></li>
+      <li><h3>Un ATC de reglas, no un modelo de lenguaje</h3><p>Las decisiones son reglas verificables: separación, secuencia de llegadas, pista ocupada, motor y al aire. Las frases salen de plantillas basadas en documentos OACI y CAP 413, y la colación del piloto se valida campo por campo.</p></li>
+      <li><h3>Se prueba sin abrir el simulador</h3><p>Una herramienta corre el motor completo contra un simulador falso, acelerado hasta 200 veces, con escenarios reproducibles por semilla. Cada error visto en vuelo se convierte primero en un test y después se arregla.</p></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Números</h2>
+    <div class="stats">
+      <div class="stat"><b>~57.000</b><span>líneas de C#</span></div>
+      <div class="stat"><b>800+</b><span>tests automáticos</span></div>
+      <div class="stat"><b>156</b><span>decisiones de diseño documentadas</span></div>
+      <div class="stat"><b>626 mil</b><span>rutas reales por indicativo</span></div>
+      <div class="stat"><b>3.790</b><span>aeropuertos con datos</span></div>
+      <div class="stat"><b>200x</b><span>velocidad de simulación en pruebas</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Arquitectura</h2>
+    <div class="arch">
+      <div class="box"><b>App</b><span>Interfaz en Avalonia (MVVM): radar, comunicaciones, plan, configuración</span></div>
+      <div class="box core"><b>Core</b><span>Toda la lógica: tráfico, ATC, rodaje, planes de vuelo y fraseología. No conoce el simulador ni la interfaz.</span></div>
+      <div class="box"><b>Sim</b><span>Puente con SimConnect</span></div>
+      <div class="box"><b>Voice</b><span>Voz y reconocimiento locales, en la CPU</span></div>
+      <div class="box"><b>Headless</b><span>Simulación acelerada sin el simulador</span></div>
+      <div class="box"><b>Probe</b><span>Consola de diagnóstico</span></div>
+      <div class="box"><b>EfbRadar</b><span>App de la tableta del avión, en TypeScript</span></div>
+    </div>
+    <p class="note">El núcleo habla con el simulador a través de una interfaz, por eso se puede probar completo contra un simulador falso.</p>
+  </section>
+
+  <section>
+    <h2>Tecnologías</h2>
+    <table>
+      <tr><th>Lenguaje</th><td>C# sobre .NET 10</td></tr>
+      <tr><th>Interfaz</th><td>Avalonia con MVVM (CommunityToolkit)</td></tr>
+      <tr><th>Simulador</th><td>SimConnect, la API oficial de MSFS 2024</td></tr>
+      <tr><th>Pruebas</th><td>xUnit y BenchmarkDotNet</td></tr>
+      <tr><th>Voz</th><td>Piper y Kokoro para hablar, Whisper para escuchar; todo en la CPU</td></tr>
+      <tr><th>App de cabina</th><td>TypeScript</td></tr>
+      <tr><th>Algoritmos</th><td>Dijkstra, A*, detección de ciclos, reserva de recursos</td></tr>
+      <tr><th>Datos</th><td>Aeropuertos y procedimientos leídos del propio simulador; rutas públicas con licencia CC0</td></tr>
+      <tr><th>Licencia</th><td>GPL-3.0, código en GitHub</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>Estado</h2>
+    <div class="cols">
+      <div class="card ok"><h3>Probado en vuelo</h3><ul>
+        <li>ATC de puesto a puesto por texto, voz o copiloto, en español e inglés</li>
+        <li>Voz del ATC y reconocimiento de voz</li>
+        <li>Plan desde SimBrief, pushback y vectores a la final</li>
+        <li>Tráfico automático en cualquier aeropuerto</li>
+        <li>Radar en la app y en la cabina</li>
+      </ul><p class="note">Vuelos IFR completos de Santiago a Concepción, Málaga a Madrid, Londres a Bruselas y Baltimore a Newark.</p></div>
+      <div class="card test"><h3>Construido, en prueba</h3><ul>
+        <li>Reparto de pistas en aeropuertos grandes con paralelas</li>
+        <li>Separación en ruta entre llegadas</li>
+        <li>Cambio de pista en vuelo</li>
+        <li>Interfaz en inglés</li>
+      </ul></div>
+      <div class="card todo"><h3>Pendiente</h3><ul>
+        <li>Botón del joystick para hablar</li>
+        <li>Vectores coordinados con la secuencia de los IA</li>
+        <li>Panel completo en la cabina</li>
+      </ul></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Lo que aprendí</h2>
+    <div class="grid">
+      <div class="card"><h3>Medir antes de optimizar</h3><p>Y medir con varias semillas antes de dar algo por arreglado. Comparar corridas evitó aceptar arreglos que solo funcionaban por suerte.</p></div>
+      <div class="card"><h3>Los mismos problemas que un sistema grande</h3><p>Aviones que reservan recursos se comportan como un sistema distribuido pequeño: bloqueos, inanición y estado que queda colgado.</p></div>
+      <div class="card"><h3>Los datos reales primero</h3><p>Casi todo lo que parecía un error del algoritmo era un dato mal leído o una suposición equivocada sobre el mundo real.</p></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="links">
+      <a href="https://github.com/ExOBrienX">GitHub: ExOBrienX</a>
+      <a href="https://www.linkedin.com/in/marco-paredes-ram%C3%ADrez-3a2082268">LinkedIn</a>
+    </div>
+    <p>Proyecto de Marco, estudiante de Ingeniería en Informática. Software libre con licencia GPL-3.0.</p>
+    <p>LUAW no está afiliado a Microsoft, Asobo, VATSIM, Navigraph (SimBrief), FSLTL ni AIG. Solo usa APIs oficiales y código propio.</p>
+  </div>
+</footer>
+
+</body>
+</html>
