@@ -13,8 +13,9 @@
 <picture><img src="assets/h-proyectos.svg" width="100%" alt="Proyectos" /></picture>
 
 <p align="center">
-  <a href="https://github.com/ExOBrienX/PadPilot"><img src="assets/pad.svg" width="49%" alt="PadPilot — gestor de mandos para Windows (C#)" /></a>
+  <a href="https://exobrienx.github.io/ExOBrienX/wallet/"><img src="assets/wallet.svg" width="49%" alt="Wallet API — billetera digital con libro contable de doble entrada, idempotencia y pruebas de concurrencia (Java, Spring Boot, PostgreSQL). Código abierto" /></a>
   <a href="https://exobrienx.github.io/ExOBrienX/coreauth/"><img src="assets/api.svg" width="49%" alt="CoreAuth — API de autenticación e integración hecha en mi práctica profesional (C#, ASP.NET Core, PostgreSQL). Repositorio privado" /></a>
+  <a href="https://github.com/ExOBrienX/PadPilot"><img src="assets/pad.svg" width="49%" alt="PadPilot — gestor de mandos para Windows (C#)" /></a>
   <a href="https://github.com/ExOBrienX/UrbanReport"><img src="assets/urban.svg" width="49%" alt="UrbanReport — proyecto de título, reportes urbanos con clasificación por IA (TypeScript)" /></a>
   <a href="https://github.com/ExOBrienX/ChatBotMeteorologico"><img src="assets/clima.svg" width="49%" alt="Chatbot del Clima — consultas del clima de Chile en lenguaje natural con Gemini y Open-Meteo (TypeScript)" /></a>
   <a href="https://exobrienx.github.io/ExOBrienX/luaw/"><img src="assets/luaw.svg" width="49%" alt="LUAW (Line Up And Wait) — ATC y tráfico IA para MSFS 2024, software libre en beta (C#)" /></a>

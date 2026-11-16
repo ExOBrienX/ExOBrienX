@@ -1,0 +1,197 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Wallet API — billetera digital con libro contable de doble entrada</title>
+<meta name="description" content="Wallet API: API REST de billetera digital en Java 25 y Spring Boot 4, con libro contable de doble entrada, idempotencia, control de concurrencia y pruebas con PostgreSQL real.">
+<link rel="stylesheet" href="../proyecto.css">
+<style>
+  .actions { display: flex; flex-wrap: wrap; gap: 12px; margin: 22px 0 0; }
+  .btn { display: inline-block; padding: 9px 18px; border: 2px solid var(--g); background: var(--g); color: var(--bg);
+         font-weight: 700; font-size: 14px; text-decoration: none; letter-spacing: 1px; }
+  .btn:hover { background: var(--wh); border-color: var(--wh); color: var(--bg); }
+  .btn.ghost { background: transparent; color: var(--g); }
+  .btn.ghost:hover { background: var(--g4); color: var(--wh); }
+
+  .ledger { width: 100%; max-width: 400px; justify-self: center; }
+  .ledger text { font-family: Consolas, "Courier New", monospace; font-weight: 700; }
+  .ledger .lock { animation: blink 1.2s steps(1) infinite; }
+  .ledger .coin { animation: coin 4.8s steps(1) infinite; }
+  @keyframes coin {
+    0% { opacity: 1; transform: translateX(0); } 4% { transform: translateX(20px); } 8% { transform: translateX(40px); }
+    12% { transform: translateX(60px); } 16% { transform: translateX(80px); } 20% { transform: translateX(100px); }
+    24%, 100% { opacity: 0; transform: translateX(100px); }
+  }
+  .ledger .before { animation: before 4.8s steps(1) infinite; }
+  @keyframes before { 0%, 23% { opacity: 1; } 24%, 100% { opacity: 0; } }
+  .ledger .after { opacity: 0; animation: after 4.8s steps(1) infinite; }
+  @keyframes after { 0%, 23% { opacity: 0; } 24%, 96% { opacity: 1; } 97%, 100% { opacity: 0; } }
+  .ledger .r1 { opacity: 0; animation: r1 4.8s steps(1) infinite; }
+  @keyframes r1 { 0%, 29% { opacity: 0; } 30%, 96% { opacity: 1; } 97%, 100% { opacity: 0; } }
+  .ledger .r2 { opacity: 0; animation: r2 4.8s steps(1) infinite; }
+  @keyframes r2 { 0%, 41% { opacity: 0; } 42%, 96% { opacity: 1; } 97%, 100% { opacity: 0; } }
+  .ledger .sum { opacity: 0; animation: sum 4.8s steps(1) infinite; }
+  @keyframes sum { 0%, 55% { opacity: 0; } 56%, 96% { opacity: 1; } 97%, 100% { opacity: 0; } }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <span>EXO-OS 1.0 / proyectos / wallet-api</span>
+    <a href="https://github.com/ExOBrienX">&lt; volver al perfil</a>
+  </div>
+</header>
+
+<main class="wrap">
+
+  <div class="hero">
+    <div>
+      <h1>Wallet API</h1>
+      <img class="title" src="titulo.svg" alt="Wallet API" width="537" height="69">
+      <p class="lead">Una billetera digital donde el dinero nunca se crea ni se pierde.</p>
+      <p class="sub">API REST en la que los clientes abren cuentas en pesos chilenos, depositan, retiran y se transfieren dinero simulado. Cada movimiento queda en un libro contable de doble entrada, y el sistema se mantiene consistente aunque lleguen cientos de operaciones a la vez o un cliente repita una petición.</p>
+      <ul class="chips">
+        <li>PROYECTO PERSONAL</li>
+        <li>CÓDIGO ABIERTO</li>
+        <li>JAVA 25</li>
+        <li>SPRING BOOT 4</li>
+        <li>POSTGRESQL</li>
+      </ul>
+      <div class="actions">
+        <a class="btn" href="https://github.com/ExOBrienX/wallet-api">VER EL REPOSITORIO &gt;</a>
+        <a class="btn ghost" href="https://github.com/ExOBrienX/wallet-api#ejecutar-el-proyecto">CÓMO EJECUTARLO</a>
+      </div>
+    </div>
+
+    <svg class="ledger" viewBox="0 0 400 300" shape-rendering="crispEdges" role="img" aria-label="Animación decorativa: una transferencia de 45.000 pesos pasa de la cuenta A a la cuenta B y queda registrada en el libro con un débito y un crédito que cuadran">
+      <!-- cuentas -->
+      <g fill="#07130a" stroke="#2ea043" stroke-width="2">
+        <rect x="14" y="22" width="132" height="76"/><rect x="254" y="22" width="132" height="76"/>
+      </g>
+      <g font-size="11" fill="#8fb98a">
+        <text x="80" y="42" text-anchor="middle">CUENTA A</text><text x="320" y="42" text-anchor="middle">CUENTA B</text>
+      </g>
+      <g font-size="17" fill="#d6ffd0">
+        <text class="before" x="80" y="74" text-anchor="middle">$100.000</text>
+        <text class="after" x="80" y="74" text-anchor="middle">$55.000</text>
+        <text class="before" x="320" y="74" text-anchor="middle">$0</text>
+        <text class="after" x="320" y="74" text-anchor="middle">$45.000</text>
+      </g>
+      <!-- bloqueo de ambas cuentas mientras dura la transferencia -->
+      <rect class="lock" x="132" y="28" width="8" height="8" fill="#ffb000"/>
+      <rect class="lock" x="372" y="28" width="8" height="8" fill="#ffb000" style="animation-delay:.3s"/>
+      <!-- recorrido de la moneda -->
+      <rect x="148" y="58" width="104" height="3" fill="#14532d"/>
+      <rect class="coin" x="146" y="54" width="10" height="10" fill="#ffb000"/>
+      <!-- libro -->
+      <rect x="14" y="122" width="372" height="164" fill="#0c150d" stroke="#39ff14" stroke-width="3"/>
+      <text x="30" y="148" font-size="13" fill="#39ff14">LIBRO CONTABLE</text>
+      <rect x="30" y="158" width="340" height="2" fill="#14532d"/>
+      <g font-size="11" fill="#2ea043">
+        <text x="30" y="178">CUENTA</text><text x="150" y="178">DEBE</text><text x="270" y="178">HABER</text>
+      </g>
+      <g class="r1" font-size="13" fill="#d6ffd0"><text x="30" y="204">A</text><text x="150" y="204">45.000</text></g>
+      <g class="r2" font-size="13" fill="#d6ffd0"><text x="30" y="228">B</text><text x="270" y="228">45.000</text></g>
+      <rect x="30" y="240" width="340" height="2" fill="#14532d"/>
+      <g class="sum" font-size="13" fill="#39ff14">
+        <text x="30" y="266">TOTAL</text><text x="150" y="266">45.000</text><text x="270" y="266">45.000</text>
+        <rect x="356" y="256" width="10" height="10" fill="#39ff14"/>
+      </g>
+    </svg>
+  </div>
+
+  <section>
+    <h2>El objetivo</h2>
+    <p>Un sistema que mueve dinero tiene una sola obligación que no admite excepciones: el saldo siempre tiene que ser correcto. Que una operación falle a la mitad, que dos transferencias lleguen al mismo tiempo sobre la misma cuenta o que un cliente reintente una petición por un timeout no puede crear ni hacer desaparecer dinero.</p>
+    <p>Este proyecto resuelve esos problemas con las herramientas que se usan en sistemas financieros reales, y demuestra con pruebas que funcionan. Es un proyecto personal de portafolio: la calidad y la corrección importan más que la cantidad de funciones.</p>
+  </section>
+
+  <section>
+    <h2>Probarlo</h2>
+    <div class="grid two">
+      <a class="card" style="text-decoration:none;color:inherit;display:block" href="https://github.com/ExOBrienX/wallet-api"><span class="tag">CÓDIGO</span><h3>Repositorio en GitHub</h3><p>Código fuente, pruebas, documentación y licencia MIT.</p></a>
+      <a class="card" style="text-decoration:none;color:inherit;display:block" href="https://github.com/ExOBrienX/wallet-api#ejecutar-el-proyecto"><span class="tag">DOCKER</span><h3>Un solo comando</h3><p><code>docker compose up --build</code> levanta la API y la base con cuatro clientes de demostración listos para usar.</p></a>
+      <a class="card" style="text-decoration:none;color:inherit;display:block" href="https://github.com/ExOBrienX/wallet-api/blob/main/docs/insomnia/wallet-api.insomnia.json"><span class="tag">INSOMNIA</span><h3>Colección lista para importar</h3><p>Todas las peticiones ordenadas, con el token y los identificadores encadenados de forma automática.</p></a>
+      <a class="card" style="text-decoration:none;color:inherit;display:block" href="https://github.com/ExOBrienX/wallet-api/blob/main/docs/base-de-datos.md"><span class="tag">BASE DE DATOS</span><h3>El esquema explicado</h3><p>Cada tabla, restricción, índice y trigger, con ejemplos de cómo se registra cada operación.</p></a>
+    </div>
+  </section>
+
+  <section>
+    <h2>Lo interesante por dentro</h2>
+    <ol class="deep">
+      <li><h3>El saldo no se guarda: se calcula</h3><p>Ninguna tabla tiene una columna de saldo. Cada operación genera asientos de débito y crédito que suman lo mismo, y el saldo es la suma de los asientos de la cuenta. No existe un dato que pueda quedar desincronizado, y una conciliación verifica en cualquier momento que el libro cuadra.</p></li>
+      <li><h3>Bloqueos en orden fijo contra los deadlocks</h3><p>Antes de validar un saldo, las cuentas se bloquean con <code>SELECT ... FOR UPDATE</code>, siempre en el mismo orden. Si A transfiere a B mientras B transfiere a A, ambas operaciones esperan por la misma cuenta en lugar de bloquearse entre sí.</p></li>
+      <li><h3>Una petición repetida no mueve el dinero dos veces</h3><p>Depósitos, retiros y transferencias exigen una clave de idempotencia. Una repetición recibe exactamente la respuesta original, y las peticiones simultáneas con la misma clave se ordenan con un advisory lock de PostgreSQL.</p></li>
+      <li><h3>La base de datos no confía ciegamente en el código</h3><p>Triggers impiden modificar o borrar asientos, y un trigger diferido verifica al confirmar cada transacción que sus asientos cuadren. Un error en la aplicación no puede dejar el libro descuadrado.</p></li>
+      <li><h3>Pruebas que se comprobó que detectan errores</h3><p>Cien hilos simultáneos atacan las mismas cuentas a través de HTTP. Para confirmar que esas pruebas sirven, se rompió el código a propósito. <span class="fact">Sin el bloqueo fallan tres de cuatro escenarios; con el orden de bloqueo invertido PostgreSQL detecta deadlocks.</span></p></li>
+      <li><h3>Ninguna entrada provoca un error interno</h3><p>Más de sesenta casos de entradas inesperadas, entre ellos caracteres de control, JSON roto, números que desbordan, intentos de inyección SQL y rutas para evadir controles. Ninguno responde 500, y cada error trae un código estable y su motivo.</p></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Números</h2>
+    <div class="stats">
+      <div class="stat"><b>318</b><span>pruebas: 139 unitarias y 179 de integración con PostgreSQL real</span></div>
+      <div class="stat"><b>120</b><span>hilos simultáneos en la prueba de carga mixta</span></div>
+      <div class="stat"><b>14</b><span>endpoints documentados en OpenAPI</span></div>
+      <div class="stat"><b>37</b><span>códigos de error documentados</span></div>
+      <div class="stat"><b>22</b><span>restricciones y 3 triggers en la base de datos</span></div>
+      <div class="stat"><b>~7.300</b><span>líneas de Java, pruebas incluidas</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Arquitectura</h2>
+    <div class="arch">
+      <div class="box"><b>Seguridad</b><span>JWT, roles, CORS y firewall de URLs</span></div>
+      <div class="box"><b>Controladores</b><span>Validación de entrada y OpenAPI</span></div>
+      <div class="box"><b>Idempotencia</b><span>Respuesta guardada y reintento ante conflictos</span></div>
+      <div class="box"><b>Servicios</b><span>Reglas de negocio y bloqueo ordenado</span></div>
+      <div class="box core"><b>Libro contable</b><span>Único componente que escribe asientos; siempre cuadran</span></div>
+      <div class="box core"><b>PostgreSQL</b><span>Restricciones y triggers que protegen el libro</span></div>
+      <div class="box tools"><b>Pruebas</b><span>Unitarias, de integración con Testcontainers, de concurrencia y de robustez</span></div>
+    </div>
+    <p class="note">El código se organiza por funcionalidad: autenticación, cuentas, libro contable, transferencias y administración.</p>
+  </section>
+
+  <section>
+    <h2>Tecnologías</h2>
+    <table>
+      <tr><th>Lenguaje</th><td>Java 25</td></tr>
+      <tr><th>Framework</th><td>Spring Boot 4.1, Spring MVC</td></tr>
+      <tr><th>Seguridad</th><td>Spring Security 7, JWT con refresh tokens rotativos, BCrypt</td></tr>
+      <tr><th>Persistencia</th><td>Spring Data JPA, Hibernate 7, PostgreSQL 17</td></tr>
+      <tr><th>Migraciones</th><td>Flyway</td></tr>
+      <tr><th>Documentación</th><td>OpenAPI con Swagger UI, colección de Insomnia</td></tr>
+      <tr><th>Pruebas</th><td>JUnit, Mockito, AssertJ, Testcontainers</td></tr>
+      <tr><th>Contenedores</th><td>Docker y Docker Compose, con sondas de salud</td></tr>
+      <tr><th>Integración continua</th><td>GitHub Actions, CodeQL y Dependabot</td></tr>
+    </table>
+  </section>
+
+  <section>
+    <h2>Seguridad</h2>
+    <div class="grid">
+      <div class="card"><h3>Sesiones que detectan robos</h3><p>Los refresh tokens se guardan como hash y se rotan en cada uso. Si alguien reutiliza uno ya usado, se cierran todas las sesiones del usuario.</p></div>
+      <div class="card"><h3>Sin pistas para un atacante</h3><p>El inicio de sesión responde igual y tarda lo mismo exista o no el correo, y las cuentas ajenas responden como inexistentes.</p></div>
+      <div class="card"><h3>Revisado en cada cambio</h3><p>CodeQL analiza el código en cada push y Dependabot vigila las dependencias. Hay pruebas que intentan usar tokens falsificados y sin firma.</p></div>
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="links">
+      <a href="https://github.com/ExOBrienX/wallet-api">Repositorio: wallet-api</a>
+      <a href="https://github.com/ExOBrienX">GitHub: ExOBrienX</a>
+      <a href="https://www.linkedin.com/in/marco-paredes-ram%C3%ADrez-3a2082268">LinkedIn</a>
+    </div>
+    <p>Proyecto personal de portafolio desarrollado por Marco. Código abierto bajo licencia MIT.</p>
+  </div>
+</footer>
+
+</body>
+</html>
